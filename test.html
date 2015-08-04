@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="http://maps.googleapis.com/maps/api/js"></script>
+<script>
+							function initializeSub2() {
+							  var mapProp2 = {
+								center:new google.maps.LatLng(51.508742,-0.120850),
+								zoom:5,
+								mapTypeId:google.maps.MapTypeId.ROADMAP
+							  };
+							  var map2=new google.maps.Map(document.getElementById("googleMap2"),mapProp2);
+							  var marker2=new google.maps.Marker({
+							  position:new google.maps.LatLng(51.508742,-0.120850),
+							  icon:'https://loebig.files.wordpress.com/2013/10/1twitter3_24x24.png',
+							  animation:google.maps.Animation.BOUNCE
+							  });
+							  marker2.setMap(map2);
+							}
+							google.maps.event.addDomListener(window, 'load', initializeSub2);
+</script>
+</head>
+
+<body>
+<div id="googleMap2" style="width:500px;height:380px;"></div>
+</body>
+
+</html>
+
+
+
+
+

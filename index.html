@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta property="og:title" content="FNP Google Map Application & API Tutorial" />
+	<meta property="og:description" content="FNP Application and examples of Google Map API" />
+	<meta property="og:image" content="http://webdev.ifas.ufl.edu/YIQIGAO/20150730-FF/google-map-meta.jpg" />
+	<meta name="keywords" content="Google Map API, tutorial, Map, LatLng, LatLngBounds, Polygon, Marker, MarkerWithLabel, InfoWindow" />
+	<meta name="description" content="Google Map Application and API Tutorial" />
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
+	<script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+	<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+	<script>
+		$(function() {
+			$( "#accordion" ).accordion();
+			$( "#research" ).selectmenu();
+		});
+	</script>
+	<style>
+    fieldset {
+      border: 0;
+    }
+    select {
+      width: 400px;
+    }
+    .overflow {
+      height: 200px;
+    }
+	p, ul, table {
+	  font-size: .7vmax;
+	  color: #479d5d;
+	}
+	img{
+	  width: 100%;
+	}
+	.ui-header{
+	  border-width: 0.25vh;
+	}
+	.ui-header .ui-title{
+	  font-size: 2vh;
+	  padding: .5vh 0;
+	}
+	.ui-content{
+	  padding: 0;
+	}
+	#accordion .ui-accordion-header {
+	  margin: 0;
+	  padding: .5vh .5em .5vh 1.7rem;	  
+	  font-size: 1.5vh;
+	  font-weight: bold;
+	}
+	#accordion .ui-accordion-content {
+	  padding: 1vh 1vw;
+      width: calc(100% - 2vw);
+	  height: calc(66vh - 11px);	
+	}
+	</style>
+</head>
+
+<body>
+	<div data-role="page" id="pageone">
+		<div data-role="header">
+			<h1>FNP Google Map Application & Tutorial</h1>
+		</div>
+
+		<div data-role="main" class="ui-content">
+			<div class="ui-grid-a">
+				<div class="ui-block-a">					
+					<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true"></script>
+					<script type="text/javascript" src="http://google-maps-utility-library-v3.googlecode.com/svn/tags/markerwithlabel/1.1.5/src/markerwithlabel_packed.js"></script>
+					<link rel="stylesheet" href="withLabel.css">
+					<script type="text/javascript" src="map.js"></script>					
+					<div id="map-canvas" style="width: 100%; height: 95vh; margin: 0; padding: 0;"></div>					
+				</div>
+
+				<div class="ui-block-b">
+					<div id="accordion">
+						<h3 id="tab0">FNP Google Map Application</h3>
+						<div>
+							<p>The application used these Google Map Objects: Map, LatLng, LatLngBounds, Polygon, Marker, MarkerWithLabel, InfoWindow.</p>
+							<p>Listeners: 
+								<ul>
+									<li>(polygon, 'mousemove'): show MarkerWithLabel(County Name Label) at polygon LatLngBounds.getCenter() if zoom level lower than 10 and no InfoWindow is open</li>
+									<li>(polygon, "mouseout"): hide MarkerWithLabel(County Name Label)</li>
+									<li>(label or polygon, 'click'): hide other Markers and only show this Marker with InfoWindow</li>
+									<li>(infoWindow,'closeclick'): hide all Markers</li>
+								</ul>
+							</p>
+							<p><br/>Other Objects Used: 
+								<ul>
+									<li>County Info: name, contact, extension, address, phone, email, latitude, longtitude</li>
+									<li>County Coordinates: name, coordinates</li>
+									<li>Markers: all Marker Objects</li>
+									<li>Labels: all MarkerWithLabel Objects</li>
+									<li>InfoWindows: all InfoWindow Objects</li>
+								</ul>							
+							</p>
+							<script>
+							google.maps.event.addDomListener(document.getElementById("tab0"), 'click', initialize);
+							</script>
+						</div>
+						
+						<h3 id="tab1">Create a Map</h3>
+						<div>
+							<p>This example creates a Google Map centered in London, England:</p>
+							<img src="create-a-map.jpg">
+							<script>
+							function initializeSub1() {
+							  var mapProp1 = {
+								center:new google.maps.LatLng(51.508742,-0.120850),
+								zoom:5,
+								mapTypeId:google.maps.MapTypeId.ROADMAP
+							  };
+							  var map1=new google.maps.Map(document.getElementById("map-canvas"),mapProp1);
+							}
+							google.maps.event.addDomListener(document.getElementById("tab1"), 'click', initializeSub1);
+							</script>
+							<p>Source: <a href="http://www.w3schools.com/googleapi/google_maps_basic.asp">http://www.w3schools.com/googleapi/google_maps_basic.asp</a></p>
+						</div>
+						
+						<h3 id="tab2">Overlays - Marker</h3>
+						<div>
+							<p>Basic marker, with animation and icon instead of marker:</p>
+							<img src="marker.jpg"><br/>
+							<p>Also we can define complex icons as MarkerImage objects:</p>
+							<img src="markerMine.jpg">							
+							<script>
+								var swamp = new google.maps.LatLng(29.649924, -82.348649);
+								function initializeSub2() {
+									var mapProp2 = {
+										center:swamp,
+										zoom:15,
+										mapTypeId:google.maps.MapTypeId.ROADMAP
+									};
+									var map2 = new google.maps.Map(document.getElementById("map-canvas"),mapProp2);
+									var markerImage = new google.maps.MarkerImage('gator.png',  //image source
+										new google.maps.Size(86, 117),  						//image size
+										new google.maps.Point(0, 0),  							//image origin
+										new google.maps.Point(73, 117));  						//marker point
+									var marker2 = new google.maps.Marker({
+										position:new google.maps.LatLng(29.649924, -82.348649),
+										icon:markerImage,
+										animation:google.maps.Animation.BOUNCE
+									});
+									marker2.setMap(map2);
+								}
+								google.maps.event.addDomListener(document.getElementById("tab2"), 'click', initializeSub2);
+							</script>
+						</div>
+						
+						<h3 id="tab3">Overlays - Polyline</h3>
+						<div>
+							<p>A Polyline is drawn through a series of coordinates in an ordered sequence.</p>
+							<p>Properties: 
+								<ul>
+									<li>path: array of LatLng objects</li>
+									<li>strokeColor: hexadecimal color (format: "#FFFFFF")</li>
+									<li>strokeOpacity: a value between 0.0 and 1.0</li>
+									<li>strokeWeight: in pixels</li>
+									<li>editable: true/false</li>
+								</ul>
+							</p>
+							<img src="polyline.jpg">
+							<script>							
+							var gainesville = new google.maps.LatLng(29.6520,-82.3250);
+							var charlotte = new google.maps.LatLng(35.2269,-80.8433);
+							var newYork = new google.maps.LatLng(40.7127,-74.0059);
+							function initializeSub3()
+							{
+								var mapProp3 = {
+									center:charlotte,
+									zoom:5,
+									mapTypeId:google.maps.MapTypeId.HYBRID
+								};
+							  
+								var map3 = new google.maps.Map(document.getElementById("map-canvas"),mapProp3);
+
+								var myTrip = [gainesville,charlotte,newYork];
+								var flightPath = new google.maps.Polyline({
+									path:myTrip,
+									strokeColor:"#ff0000",
+									strokeOpacity:0.8,
+									strokeWeight:2
+								});
+								flightPath.setMap(map3);
+							}
+
+							google.maps.event.addDomListener(document.getElementById("tab3"), 'click', initializeSub3);
+							</script>				
+						</div>
+						
+						<h3 id="tab4">Overlays - Polygon</h3>
+						<div>
+							<p>A Polygon is similar to a Polyline but it is designed to define regions within a closed loop.</p>
+							<p>Additional Properties: 
+								<ul>
+									<li>fillColor: hexadecimal color (format: "#FFFFFF")</li>
+									<li>fillOpacity: a value between 0.0 and 1.0</li>
+								</ul>
+							</p>
+							<img src="polygon.jpg">
+							<script>
+							var OkaloosaCoords = {"name": "Okaloosa", "coords": [
+								new google.maps.LatLng(30.387229,-86.796886),
+								new google.maps.LatLng(30.996923,-86.786499),
+								new google.maps.LatLng(30.994680,-86.390991),
+								new google.maps.LatLng(30.378799,-86.396484)
+							]}
+							function initializeSub4() {
+								var mapProp4 = {
+									center:new google.maps.LatLng(30.387229,-86.796886),
+									zoom:8,
+									mapTypeId: google.maps.MapTypeId.ROADMAP
+								};
+								  
+								var map4 = new google.maps.Map(document.getElementById("map-canvas"),mapProp4);
+
+								var Okaloosa = new google.maps.Polygon({
+									path:OkaloosaCoords.coords,
+									strokeColor:"#FF0000",
+									strokeOpacity:0.8,
+									strokeWeight:2,
+									fillColor:"#FF0000",
+									fillOpacity:0.2
+								});
+								Okaloosa.setMap(map4);
+							}
+
+							google.maps.event.addDomListener(document.getElementById("tab4"), 'click', initializeSub4);
+							</script>
+						</div>
+						
+						<h3 id="tab5">Overlays - Circle</h3>
+						<div>
+							<p>A Circle is similar to a Polygon but in different shape.</p>
+							<p>Different Properties: 
+								<ul>
+									<li>center: LatLng object</li>
+									<li>radius: in meters</li>
+								</ul>
+							</p>
+							<img src="circle.jpg">
+							<script>
+							function initializeSub5() {
+								var mapProp5 = {
+									center:gainesville,
+									zoom:10,
+									mapTypeId:google.maps.MapTypeId.ROADMAP
+								};								  
+								var map5 = new google.maps.Map(document.getElementById("map-canvas"),mapProp5);
+								var myCity = new google.maps.Circle({
+									center:gainesville,
+									radius:10000,
+									strokeColor:"#ff0000",
+									strokeOpacity:0.8,
+									strokeWeight:2,
+									fillColor:"#ff0000",
+									fillOpacity:0.2
+								});
+								myCity.setMap(map5);
+							}
+							google.maps.event.addDomListener(document.getElementById("tab5"), 'click', initializeSub5);
+							</script>
+						</div>
+						
+						<h3 id="tab6">Overlays - InfoWindow</h3>
+						<div>
+							<p>An InfoWindow shows text content for a marker: </p>
+							<img src="infowindow.jpg">
+							<script>
+							function initializeSub6() {
+								var mapProp6 = {
+									center:gainesville,
+									zoom:11,
+									mapTypeId:google.maps.MapTypeId.ROADMAP
+								};
+								var map6 = new google.maps.Map(document.getElementById("map-canvas"),mapProp6);
+								var gainesvilleMarker=new google.maps.Marker({
+									position:swamp,
+								});
+								gainesvilleMarker.setMap(map6);
+								var gainesvilleInfowindow = new google.maps.InfoWindow({
+									content:"Gator Country!"
+								});
+								gainesvilleInfowindow.open(map6,gainesvilleMarker);
+							}
+							google.maps.event.addDomListener(document.getElementById("tab6"), 'click', initializeSub6);
+							</script>
+						</div>
+						
+						<h3 id="tab7">Events</h3>
+						<div>							
+							<script>
+							function initializeSub7() {
+								var mapProp7 = {
+									center: gainesville,
+									zoom:11,
+									mapTypeId: google.maps.MapTypeId.ROADMAP
+								};
+								var map7 = new google.maps.Map(document.getElementById("map-canvas"),mapProp7);								 
+								google.maps.event.addListener(map7,'center_changed',function() {
+									// 3 seconds after the center of the map has changed, pan back to the original center of the map
+									window.setTimeout(function() {
+										map7.panTo(gainesville);
+									},3000);
+								});
+							}
+							google.maps.event.addDomListener(document.getElementById("tab7"), 'click', initializeSub7);
+							</script>
+							<table>
+							  <tr>
+								<td style="width:20%"><strong>Event</strong></th>
+								<td style="width:20%"><strong>Arguments</strong></th>
+								<td style="width:60%"><strong>Description</strong></th>
+							  </tr>
+								<tr>
+								<td>bounds_changed</td>
+								<td>None</td>
+								<td>Fired when the viewport bounds have changed</td>
+							  </tr>
+								<tr>
+								<td>center_changed</td>
+								<td>None</td>
+								<td>Fired when the map center property changes</td>
+							  </tr>  <tr>
+								<td>click</td>
+								<td><i>MouseEvent</i></td>
+								<td>Fired when the user clicks on the map </td>
+							  </tr>
+								<tr>
+								<td>dblclick</td>
+								<td><i>MouseEvent</i></td>
+								<td>Fired when the user double-clicks on the map </td>
+							  </tr>
+								<tr>
+								<td>drag</td>
+								<td>None</td>
+								<td>Fired repeatedly while the user drags the map</td>
+							  </tr>
+								<tr>
+								<td>dragend</td>
+								<td>None</td>
+								<td>Fired when the user stops dragging the map</td>
+							  </tr>
+								<tr>
+								<td>dragstart</td>
+								<td>None</td>
+								<td>Fired when the user starts dragging the map</td>
+							  </tr>
+								<tr>
+								<td>heading_changed</td>
+								<td>None</td>
+								<td>Fired when the map heading property changes</td>
+							  </tr>
+								<tr>
+								<td>idle</td>
+								<td>None</td>
+								<td>Fired when the map becomes idle after panning or zooming</td>
+							  </tr>
+								<tr>
+								<td>maptypeid_changed</td>
+								<td>None</td>
+								<td>Fired when the mapTypeId property changes</td>
+							  </tr>
+								<tr>
+								<td>mousemove</td>
+								<td><i>MouseEvent</i></td>
+								<td>Fired whenever the user's mouse moves over the map container</td>
+							  </tr>
+								<tr>
+								<td>mouseout</td>
+								<td><i>MouseEvent</i></td>
+								<td>Fired when the user's mouse exits the map container</td>
+							  </tr>
+								<tr>
+								<td>mouseover</td>
+								<td><i>MouseEvent</i></td>
+								<td>Fired when the user's mouse enters the map container</td>
+							  </tr>
+								<tr>
+								<td>projection_changed</td>
+								<td>None</td>
+								<td>Fired when the projection has changed</td>
+							  </tr>
+								<tr>
+								<td>resize</td>
+								<td>None</td>
+								<td>Fired when the map (div) changes size</td>
+							  </tr>
+								<tr>
+								<td>rightclick</td>
+								<td><i>MouseEvent</i></td>
+								<td>Fired when the user right-clicks on the map</td>
+							  </tr>
+								<tr>
+								<td>tilesloaded</td>
+								<td>None</td>
+								<td>Fired when the visible tiles have finished loading</td>
+							  </tr>
+								<tr>
+								<td>tilt_changed</td>
+								<td>None</td>
+								<td>Fired when the map tilt property changes</td>
+							  </tr>
+								<tr>
+								<td>zoom_changed</td>
+								<td>None</td>
+								<td>Fired when the map zoom property changes</td>
+							  </tr>
+							</table>
+							<p>Example of "center_changed": </p>
+							<img src="events.jpg">
+						</div>
+						
+						<h3>Controls</h3>
+						<div>
+							<p>Default Controls: 
+								<ul>
+									<li>Zoom: displays a slider or "+/-" buttons to control the zoom level of the map</li>
+									<li>Pan: displays a pan control for panning the map</li>
+									<li>MapType: lets the user toggle between map types (roadmap and satellite)</li>
+									<li>Street View: displays a Pegman icon which can be dragged to the map to enable Street View</li>
+								</ul>
+							</p>
+							<p>More Controls: 
+								<ul>
+									<li>Scale: displays a map scale element</li>
+									<li>Rotate: displays a small circular icon which allows you to rotate maps</li>
+									<li>Overview Map: displays a thumbnail overview map reflecting the current map viewport within a wider area</li>
+								</ul>
+							</p>
+						</div>
+					</div>	 
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html> 

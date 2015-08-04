@@ -1,0 +1,16 @@
+.scrollFix {
+    line-height: 1.35;
+    overflow: hidden;
+    white-space: nowrap;
+}
+.labels {
+	 color: red;
+	 background-color: white;
+	 font-family: "Lucida Grande", "Arial", sans-serif;
+	 font-size: 15px;
+	 font-weight: bold;
+	 text-align: center;
+	 width: 90px;     
+	 border: 2px solid red;
+	 white-space: nowrap;
+}
